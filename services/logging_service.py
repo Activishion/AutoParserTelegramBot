@@ -16,7 +16,7 @@ class AplicationLogging:
         error_log = logging.getLogger('error_logger')
         error_log.setLevel(logging.ERROR)
         error_log_handler = RotatingFileHandler(
-            "../logs/error/error.log",
+            "/home/alex/local_web_server/AutoParserTelegramBot/logs/error/error.log",
             maxBytes=1000000,
             backupCount=100
         )
@@ -33,7 +33,7 @@ class AplicationLogging:
         static_log = logging.getLogger('static_logger')
         static_log.setLevel(logging.INFO)
         static_log_handler = RotatingFileHandler(
-            "../logs/static/static.log",
+            "/home/alex/local_web_server/AutoParserTelegramBot/logs/static/static.log",
             maxBytes=1000000,
             backupCount=100
         )

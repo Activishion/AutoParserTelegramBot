@@ -16,4 +16,4 @@ CREATE TABLE brands_nodels (
     brand_id int NOT NULL,
     model_name varchar(50) NOT NULL,
     model_id int NOT NULL
-)
+);
