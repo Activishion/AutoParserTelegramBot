@@ -8,8 +8,6 @@ from handlers.admin_private import admin_router
 from handlers.user_private import user_router
 from services.logging_service import static_log
 from settings.config import settings
-from settings.database import async_session_maker
-from settings.middleware import DataBaseSession
 
 
 bot = Bot(token=settings.TOKEN)
@@ -32,7 +30,6 @@ async def on_shutdown(bot) -> None:
 async def main() -> None:
     dp.startup.register(on_startup)
     dp.shutdown.register(on_shutdown)
-    dp.update.middleware(DataBaseSession(session_pool=async_session_maker))
     await bot.delete_webhook(drop_pending_updates=True)
     await bot.set_my_commands(commands=private, scope=types.BotCommandScopeAllPrivateChats())
     await dp.start_polling(bot, allowed_updates=['message', 'edited_message'])

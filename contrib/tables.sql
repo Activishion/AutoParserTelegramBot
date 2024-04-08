@@ -10,10 +10,12 @@ create table history_requests (
 	username varchar
 )
 
-CREATE TABLE brands_nodels (
-    id int PRIMARY KEY NOT NULL,
-    brand_name varchar(50) NOT NULL,
-    brand_id int NOT NULL,
-    model_name varchar(50) NOT NULL,
-    model_id int NOT NULL
+CREATE TABLE marks (
+    id int NOT NULL,
+    brand_name varchar(50) NOT NULL
+);
+
+CREATE TABLE models (
+    id int NOT NULL,
+    model_name varchar(50) NOT NULL
 );

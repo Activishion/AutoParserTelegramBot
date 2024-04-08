@@ -18,13 +18,13 @@ class BotConfig:
 
     LOG_FORMAT: str = '%(asctime)s - [%(levelname)s] - (%(filename)s).%(funcName)s(%(lineno)d) - %(message)s'
     LOG_DATE_FORMAT: str = "%m/%d/%Y %H:%M:%S"
+    DIRECTORY_STATIC_LOG: str = os.getenv('DIRECTORY_STATIC_LOG')
+    DIRECTORY_ERROR_LOG: str = os.getenv('DIRECTORY_ERROR_LOG')
 
     @property
     def database_url_postgresql(self):
-        return (
-            f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
-            f"@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
-        )
+        return (f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
+                f"@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}")
 
 
 settings = BotConfig()

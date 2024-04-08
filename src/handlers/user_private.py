@@ -2,9 +2,10 @@ from aiogram import types, Router, F
 from aiogram.filters import CommandStart, Command, or_f, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from services import parsing_service
+from settings.dict_marks import dict_marks_car
+from settings.dict_models import dict_models
 from repository import history_requests
 
 
@@ -70,9 +71,7 @@ async def back_step_handler(message: types.Message, state: FSMContext) -> None:
     for step in GetAuto.__all_states__:
         if step.state == current_state:
             await state.set_state(previous)
-            await message.answer(
-                f"Ок, вы вернулись к прошлому шагу \n {GetAuto.texts[previous.state]}"
-            )
+            await message.answer(f"Ок, вы вернулись к прошлому шагу \n {GetAuto.texts[previous.state]}")
             return
         previous = step
 
@@ -82,8 +81,12 @@ async def add_brand(message: types.Message, state: FSMContext):
     if len(message.text) >= 50:
         await message.answer("Название марки авто не должно превышать 50 символов. \n Введите пожалуйста заново")
         return
+    
+    if dict_marks_car.get(message.text.lower(), None) is None:
+        await message.answer('Введенная вами марка не найдена в списке допустимых')
+        return
 
-    await state.update_data(brand=message.text)
+    await state.update_data(brand=message.text.lower())
     await message.answer('Введите модель авто')
     await state.set_state(GetAuto.model)
 
@@ -93,8 +96,12 @@ async def add_model(message: types.Message, state: FSMContext):
     if len(message.text) >= 50:
         await message.answer("Название модели авто не должно превышать 50 символов. \n Введите пожалуйста заново")
         return
+    
+    if dict_models.get(message.text.lower(), None) is None:
+        await message.answer('Введенная вами модель не найдена в списке допустимых')
+        return
 
-    await state.update_data(model=message.text)
+    await state.update_data(model=message.text.lower())
     await message.answer('Введите необходимые годы выпуска авто в формате 2000-2020')
     await state.set_state(GetAuto.years)
 
@@ -120,7 +127,7 @@ async def add_mileage(message: types.Message, state: FSMContext):
 
 
 @user_router.message(GetAuto.price, F.text)
-async def add_price(message: types.Message, state: FSMContext, session: AsyncSession):
+async def add_price(message: types.Message, state: FSMContext):
     price_min = message.text.split('-')[0]
     price_max = message.text.split('-')[1]
 
@@ -141,12 +148,10 @@ async def add_price(message: types.Message, state: FSMContext, session: AsyncSes
         f"Цена: {data.get('price')}"
     )
     await message.answer(text_message)
-    await history_requests.add_history_request(session=session, data=data)
-    result_wallapop = await parsing_service.get_content_wallapop(data=data)
-    result_milanuncios = await parsing_service.get_content_milanuncios(data=data)
-    result_coches = await parsing_service.get_content_coches(data=data)
-
-    result = result_wallapop + result_milanuncios + result_coches
+    await history_requests.add_history_request(data=data)
+    result_wallapop: list[str] = await parsing_service.get_content_wallapop(data=data)
+    result_coches: list[str] = await parsing_service.get_content_coches(data=data)
+    result = result_wallapop + result_coches
 
     if len(result) == 0:
         await message.answer('По вашему запросу ничего не найдено, попробуйте изменить критерии поиска')
