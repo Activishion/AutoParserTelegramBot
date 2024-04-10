@@ -9,8 +9,8 @@ from seleniumwire import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
 from repository import auto_repository
-from settings.dict_marks import dict_marks_car
-from settings.dict_models import dict_models
+from settings.data.dict_marks import dict_marks_car
+from settings.data.dict_models import dict_models
 from services.logging_service import static_log
 
 
@@ -42,7 +42,6 @@ async def get_content_wallapop(data: dict[str, str]) -> list[str]:
 
         driver.close()
         return list_link_cars
-
 
 
 async def get_content_coches(data: dict[str, str]) -> list[str]:

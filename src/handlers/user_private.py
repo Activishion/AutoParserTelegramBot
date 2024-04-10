@@ -4,8 +4,8 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
 from services import parsing_service
-from settings.dict_marks import dict_marks_car
-from settings.dict_models import dict_models
+from settings.data.dict_marks import dict_marks_car
+from settings.data.dict_models import dict_models
 from repository import history_requests
 
 
